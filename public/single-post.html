@@ -1,0 +1,77 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+ </head>
+ <body>
+    <section id="single-post" class="page">
+            <div class="container">
+                <div class="single-post">
+                    <div class="single-post-header">
+                        <h1 class="single-post-title" id="post-title">Loading...</h1>
+                        <div class="single-post-meta">
+                            <span id="post-author">By Author</span>
+                            <span id="post-date">Date</span>
+                            <span id="read-time">5 min read</span>
+                        </div>
+                    </div>
+                    <div class="featured-image" id="featured-image">Featured Image</div>
+                    <div class="post-body" id="post-content">
+                        <p>Loading post content...</p>
+                    </div>
+                    <a href="index.html" class="back-to-blog">Back to Blog</a>
+                </div>
+            </div>
+        </section>
+
+        <script src="index.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Get post ID from URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const postId = urlParams.get('id');
+
+                if (postId) {
+                    // Fetch post data from API
+                    fetch(`http://127.0.0.1:5000/api/posts/${postId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Post not found');
+                            }
+                            return response.json();
+                        })
+                        .then(post => {
+                            // Populate the page with post data
+                            document.getElementById('post-title').textContent = post.title;
+                            document.getElementById('post-author').textContent = `By ${post.author}`;
+                            document.getElementById('post-date').textContent = new Date(post.createdAt).toLocaleDateString();
+                            document.getElementById('post-content').innerHTML = post.content;
+
+                            // Set featured image if available
+                            if (post.imageUrl) {
+                                document.getElementById('featured-image').innerHTML = `<img src="${post.imageUrl}" alt="Featured Image" style="width: 100%; height: 100%; object-fit: cover;">`;
+                            } else {
+                                document.getElementById('featured-image').textContent = 'Featured Image';
+                            }
+
+                            // Calculate and display read time (rough estimate: 200 words per minute)
+                            const wordCount = post.content.replace(/<[^>]*>/g, '').split(/\s+/).length;
+                            const readTime = Math.ceil(wordCount / 200);
+                            document.getElementById('read-time').textContent = `${readTime} min read`;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching post:', error);
+                            document.getElementById('post-title').textContent = 'Post Not Found';
+                            document.getElementById('post-content').innerHTML = '<p>Sorry, the requested post could not be found.</p>';
+                        });
+                } else {
+                    document.getElementById('post-title').textContent = 'No Post ID Provided';
+                    document.getElementById('post-content').innerHTML = '<p>Please provide a valid post ID in the URL.</p>';
+                }
+            });
+        </script>
+ </body>
+ </html>

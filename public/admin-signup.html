@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Signup</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <section id="admin-signup" class="page">
+        <div class="container">
+            <div class="form-container">
+                <h2 class="form-title">Admin Signup</h2>
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" class="form-control" placeholder="Enter your username" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Enter your password" required />
+                    </div>
+                    <div class="form-footer">
+                        <button type="submit" class="btn">Signup</button>
+                        <a href="admin-login.html" class="form-link">Back to Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const signupForm = document.getElementById('signup-form');
+
+            if (signupForm) {
+                signupForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+
+                    fetch('http://127.0.0.1:5000/api/auth/signup', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ username, password }),
+                    }).then(res => {
+                        if (res.ok) {
+                            alert('Signup successful! Please login.');
+                            window.location.href = 'admin-login.html';
+                        } else {
+                            res.json().then(data => {
+                                alert('Signup failed: ' + data.message);
+                            });
+                        }
+                    }).catch(err => {
+                        alert('Signup failed');
+                        console.error('Signup error:', err);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
