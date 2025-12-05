@@ -154,6 +154,38 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Admin signup
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+        signupForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            fetch(`${baseUrl}/api/auth/signup`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(res => {
+                if (res.ok) {
+                    alert('Signup successful! Please login.');
+                    window.location.href = 'admin-login.html';
+                } else {
+                    res.json().then(data => {
+                        alert('Signup failed: ' + data.message);
+                    });
+                }
+            })
+            .catch(err => {
+                alert('Signup failed');
+                console.error('Signup error:', err);
+            });
+        });
+    }
+
     // Logout
     const logoutLink = document.getElementById('logout-link');
     if (logoutLink) {
