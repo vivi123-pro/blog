@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     // 🔗 Your backend base URL on Render
-    const baseUrl = "https://blog-10-038z.onrender.comgi";
+    const baseUrl = "https://blog-10-038z.onrender.com";
 
     // Get current page from URL
     const path = window.location.pathname;
